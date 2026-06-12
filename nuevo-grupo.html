@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuevo Grupo — Ecosistema de Formación</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 36px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--bg);
+  position: relative;
+}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(79,110,247,.05);}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:36px;margin-bottom:10px;color:var(--muted);display:block;}
+.upload-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.upload-sub{font-size:12px;color:var(--muted);}
+.upload-zone.loaded{border-color:var(--success);background:rgba(34,201,122,.05);}
+.upload-zone.loaded .upload-icon{color:var(--success);}
+
+.import-result{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-top:14px;display:none;}
+.import-result.show{display:block;}
+.import-summary{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+.import-badge{font-size:11px;padding:3px 10px;border-radius:6px;font-weight:600;}
+.import-badge.green{background:rgba(34,201,122,.15);color:#4fd98a;}
+.import-badge.blue{background:rgba(79,110,247,.15);color:#7b9fff;}
+.import-badge.warn{background:rgba(245,166,35,.15);color:#f5b84a;}
+
+.ap-preview{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:4px;}
+.ap-preview table{width:100%;border-collapse:collapse;font-size:12px;}
+.ap-preview th{background:var(--bg3);padding:7px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);}
+.ap-preview td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--text);}
+.ap-preview tr:last-child td{border-bottom:none;}
+
+.auto-badge{display:inline-block;font-size:10px;padding:2px 7px;background:rgba(34,201,122,.15);color:#4fd98a;border-radius:4px;font-weight:600;margin-left:6px;vertical-align:middle;}
+.field-filled .field-input{border-color:rgba(34,201,122,.4)!important;}
+
+.comp-selector{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:4px;}
+.comp-list{max-height:220px;overflow-y:auto;}
+.comp-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s;display:flex;align-items:flex-start;gap:10px;}
+.comp-item:last-child{border-bottom:none;}
+.comp-item:hover{background:var(--bg3);}
+.comp-item.selected{background:rgba(79,110,247,.12);border-left:3px solid var(--accent);}
+.comp-item-code{font-size:11px;color:var(--muted);white-space:nowrap;padding-top:2px;}
+.comp-item-name{font-size:13px;color:var(--text);line-height:1.4;}
+
+.ra-list{padding:10px 14px;background:rgba(79,110,247,.04);border-top:1px solid var(--border);display:none;}
+.ra-list.show{display:block;}
+.ra-item{padding:5px 0;font-size:12px;color:var(--muted);border-bottom:1px dashed var(--border);line-height:1.4;}
+.ra-item:last-child{border-bottom:none;}
+.ra-label{font-size:11px;font-weight:600;color:var(--accent);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+
+.trim-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;}
+.trim-opt{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;text-align:center;transition:all .15s;}
+.trim-opt:hover{border-color:var(--accent);}
+.trim-opt.active{border-color:var(--accent);background:rgba(79,110,247,.1);}
+.trim-opt-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.trim-opt-desc{font-size:11px;color:var(--muted);}
+input[type=hidden]{}
+</style>
+</head>
+<body>
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <div class="brand">
+      <a href="index.html" style="text-decoration:none;display:flex;align-items:center;gap:10px">
+        <span class="brand-icon">&#9632;</span>
+        <span class="brand-name">Ecosistema de Formación</span>
+      </a>
+    </div>
+    <nav class="top-nav"><a href="index.html" class="nav-link">← Volver</a></nav>
+  </div>
+</header>
+
+<main class="main form-main">
+<div class="form-card">
+  <h1 class="form-title">Nuevo grupo</h1>
+  <p class="form-subtitle">Sube el Reporte de Juicios Evaluativos de Sofía Plus y el formulario se rellena automáticamente.</p>
+
+  <form id="formNuevoGrupo">
+
+    <!-- PASO 1: REPORTE SOFÍA -->
+    <fieldset class="form-section">
+      <legend class="section-label">Paso 1 — Reporte de Juicios Evaluativos</legend>
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept=".xls,.xlsx,.csv" onchange="procesarReporte(this.files[0])">
+        <span class="upload-icon">&#8679;</span>
+        <div class="upload-title">Arrastra el archivo aquí o haz clic para seleccionar</div>
+        <div class="upload-sub">Reporte de Juicios Evaluativos exportado desde Sofía Plus (.xls · .xlsx)</div>
+      </div>
+      <div class="import-result" id="importResult">
+        <div class="import-summary" id="importSummary"></div>
+        <div class="ap-preview" id="apPreview"></div>
+      </div>
+    </fieldset>
+
+    <!-- PASO 2: COMPETENCIA Y RA -->
+    <fieldset class="form-section" id="seccionCompetencia" style="display:none">
+      <legend class="section-label">Paso 2 — Competencia y resultado de aprendizaje <span class="auto-badge">AUTO</span></legend>
+      <p class="field-hint">Selecciona la competencia de este plan de trabajo. Los resultados de aprendizaje aparecerán automáticamente.</p>
+      <div class="comp-selector">
+        <div class="comp-list" id="compList"></div>
+        <div class="ra-list" id="raList">
+          <div class="ra-label">Resultados de aprendizaje</div>
+          <div id="raItems"></div>
+        </div>
+      </div>
+      <input type="hidden" id="fCompetencia">
+      <input type="hidden" id="fRA">
+    </fieldset>
+
+    <!-- PASO 3: DATOS DEL PROGRAMA -->
+    <fieldset class="form-section">
+      <legend class="section-label">Paso 3 — Datos del programa <span class="auto-badge" id="autoBadge" style="display:none">AUTO</span></legend>
+      <div class="field-row">
+        <div class="field" id="wFicha">
+          <label class="field-label">Número de ficha</label>
+          <input class="field-input" type="text" id="fFicha" placeholder="3410389" required>
+        </div>
+        <div class="field">
+          <label class="field-label">Nombre del grupo</label>
+          <input class="field-input" type="text" id="fGrupo" placeholder="PCMCNC-8" required>
+        </div>
+      </div>
+      <div class="field" id="wPrograma">
+        <label class="field-label">Código y nombre del programa</label>
+        <input class="field-input" type="text" id="fPrograma" placeholder="821100 — TECNÓLOGO EN PRODUCCIÓN..." required>
+      </div>
+    </fieldset>
+
+    <!-- PASO 4: INSTRUCTOR -->
+    <fieldset class="form-section">
+      <legend class="section-label">Paso 4 — Instructor y centro <span class="auto-badge" id="autoBadge2" style="display:none">AUTO</span></legend>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Nombre del instructor</label>
+          <input class="field-input" type="text" id="fInstructor" value="RODOLFO DONADO" required>
+        </div>
+        <div class="field" id="wRegional">
+          <label class="field-label">Regional</label>
+          <input class="field-input" type="text" id="fRegional" placeholder="ATLÁNTICO">
+        </div>
+      </div>
+      <div class="field" id="wCentro">
+        <label class="field-label">Centro de formación</label>
+        <input class="field-input" type="text" id="fCentro" placeholder="CENTRO NACIONAL COLOMBO ALEMÁN">
+      </div>
+    </fieldset>
+
+    <!-- PASO 5: UBICACIÓN + TRIMESTRES + HORARIOS -->
+    <fieldset class="form-section">
+      <legend class="section-label">Paso 5 — Período y horarios</legend>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Año</label>
+          <select class="field-input" id="fAno" required>
+            <option value="">Seleccionar</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Trimestre de inicio</label>
+          <select class="field-input" id="fTrimestre" required>
+            <option value="I">I Trimestre</option>
+            <option value="II">II Trimestre</option>
+            <option value="III">III Trimestre</option>
+            <option value="IV">IV Trimestre</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:14px">
+        <label class="field-label">¿Cuántos trimestres tiene este plan de trabajo?</label>
+        <div class="trim-selector">
+          <div class="trim-opt active" id="opt1trim" onclick="selTrim(1)">
+            <div class="trim-opt-label">1 Trimestre</div>
+            <div class="trim-opt-desc">Un solo horario</div>
+          </div>
+          <div class="trim-opt" id="opt2trim" onclick="selTrim(2)">
+            <div class="trim-opt-label">2 Trimestres</div>
+            <div class="trim-opt-desc">Horario diferente por trimestre</div>
+          </div>
+        </div>
+        <input type="hidden" id="fNumTrim" value="1">
+      </div>
+
+      <div class="field">
+        <label class="field-label">Horario Trimestre 1</label>
+        <select class="field-input" id="fHorario1">
+          <option value="">Seleccionar horario...</option>
+          <option value="LUNES 6:30 - 11:30 A.M.">Lunes 6:30 – 11:30 a.m.</option>
+          <option value="MARTES 6:30 - 11:30 A.M.">Martes 6:30 – 11:30 a.m.</option>
+          <option value="MIÉRCOLES 6:30 - 11:30 A.M.">Miércoles 6:30 – 11:30 a.m.</option>
+          <option value="JUEVES 6:30 - 11:30 A.M.">Jueves 6:30 – 11:30 a.m.</option>
+          <option value="VIERNES 6:30 - 11:30 A.M.">Viernes 6:30 – 11:30 a.m.</option>
+          <option value="LUNES 1:30 - 5:30 P.M.">Lunes 1:30 – 5:30 p.m.</option>
+          <option value="MARTES 1:30 - 5:30 P.M.">Martes 1:30 – 5:30 p.m.</option>
+          <option value="MIÉRCOLES 1:30 - 5:30 P.M.">Miércoles 1:30 – 5:30 p.m.</option>
+          <option value="JUEVES 1:30 - 5:30 P.M.">Jueves 1:30 – 5:30 p.m.</option>
+          <option value="VIERNES 1:30 - 5:30 P.M.">Viernes 1:30 – 5:30 p.m.</option>
+          <option value="SÁBADO 6:30 - 11:30 A.M.">Sábado 6:30 – 11:30 a.m.</option>
+          <option value="PERSONALIZADO">Personalizado...</option>
+        </select>
+        <input class="field-input" type="text" id="fHorario1Custom" placeholder="Escribe el horario..." style="display:none;margin-top:6px">
+      </div>
+
+      <div class="field" id="wHorario2" style="display:none;margin-top:14px">
+        <label class="field-label">Horario Trimestre 2</label>
+        <select class="field-input" id="fHorario2">
+          <option value="">Seleccionar horario...</option>
+          <option value="LUNES 6:30 - 11:30 A.M.">Lunes 6:30 – 11:30 a.m.</option>
+          <option value="MARTES 6:30 - 11:30 A.M.">Martes 6:30 – 11:30 a.m.</option>
+          <option value="MIÉRCOLES 6:30 - 11:30 A.M.">Miércoles 6:30 – 11:30 a.m.</option>
+          <option value="JUEVES 6:30 - 11:30 A.M.">Jueves 6:30 – 11:30 a.m.</option>
+          <option value="VIERNES 6:30 - 11:30 A.M.">Viernes 6:30 – 11:30 a.m.</option>
+          <option value="LUNES 1:30 - 5:30 P.M.">Lunes 1:30 – 5:30 p.m.</option>
+          <option value="MARTES 1:30 - 5:30 P.M.">Martes 1:30 – 5:30 p.m.</option>
+          <option value="MIÉRCOLES 1:30 - 5:30 P.M.">Miércoles 1:30 – 5:30 p.m.</option>
+          <option value="JUEVES 1:30 - 5:30 P.M.">Jueves 1:30 – 5:30 p.m.</option>
+          <option value="VIERNES 1:30 - 5:30 P.M.">Viernes 1:30 – 5:30 p.m.</option>
+          <option value="SÁBADO 6:30 - 11:30 A.M.">Sábado 6:30 – 11:30 a.m.</option>
+          <option value="PERSONALIZADO">Personalizado...</option>
+        </select>
+        <input class="field-input" type="text" id="fHorario2Custom" placeholder="Escribe el horario..." style="display:none;margin-top:6px">
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <a href="index.html" class="btn-ghost">Cancelar</a>
+      <button type="submit" class="btn-primary">Crear grupo</button>
+    </div>
+
+  </form>
+</div>
+</main>
+
+<script src="js/storage.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="js/nuevo-grupo.js"></script>
+</body>
+</html>
