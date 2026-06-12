@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuevo Grupo — Ecosistema de Formación</title>
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <div class="brand">
+      <a href="index.html" style="text-decoration:none;display:flex;align-items:center;gap:10px">
+        <span class="brand-icon">&#9632;</span>
+        <span class="brand-name">Ecosistema de Formación</span>
+      </a>
+    </div>
+    <nav class="top-nav">
+      <a href="index.html" class="nav-link">← Volver</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main form-main">
+
+  <div class="form-card">
+    <h1 class="form-title">Nuevo grupo</h1>
+    <p class="form-subtitle">Estos datos se heredan automáticamente a todos los documentos del grupo.</p>
+
+    <form id="formNuevoGrupo">
+
+      <!-- UBICACIÓN -->
+      <fieldset class="form-section">
+        <legend class="section-label">Ubicación en el repositorio</legend>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Año</label>
+            <select class="field-input" id="fAno" required>
+              <option value="">Seleccionar</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Trimestre</label>
+            <select class="field-input" id="fTrimestre" required>
+              <option value="I">I Trimestre</option>
+              <option value="II">II Trimestre</option>
+              <option value="III">III Trimestre</option>
+              <option value="IV">IV Trimestre</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- DATOS DEL PROGRAMA -->
+      <fieldset class="form-section">
+        <legend class="section-label">Datos del programa</legend>
+        <div class="field">
+          <label class="field-label">Código y nombre del programa</label>
+          <input class="field-input" type="text" id="fPrograma" placeholder="821100 — TECNÓLOGO EN PRODUCCIÓN..." required>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Número de ficha</label>
+            <input class="field-input" type="text" id="fFicha" placeholder="3410389" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Nombre del grupo</label>
+            <input class="field-input" type="text" id="fGrupo" placeholder="PCMCNC-8" required>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Competencia</label>
+          <input class="field-input" type="text" id="fCompetencia" placeholder="290201190 — ELABORACIÓN DE PLANOS...">
+        </div>
+        <div class="field">
+          <label class="field-label">Resultado de aprendizaje</label>
+          <input class="field-input" type="text" id="fRA" placeholder="RA2 — DOCUMENTAR LOS PLANOS...">
+        </div>
+      </fieldset>
+
+      <!-- DATOS DEL INSTRUCTOR -->
+      <fieldset class="form-section">
+        <legend class="section-label">Instructor</legend>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Nombre del instructor</label>
+            <input class="field-input" type="text" id="fInstructor" placeholder="RODOLFO DONADO" required>
+          </div>
+          <div class="field">
+            <label class="field-label">Regional</label>
+            <input class="field-input" type="text" id="fRegional" placeholder="ATLÁNTICO">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Centro de formación</label>
+          <input class="field-input" type="text" id="fCentro" placeholder="CENTRO NACIONAL COLOMBO ALEMÁN">
+        </div>
+      </fieldset>
+
+      <!-- HORARIOS -->
+      <fieldset class="form-section">
+        <legend class="section-label">Horarios</legend>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Horario Trimestre 1</label>
+            <input class="field-input" type="text" id="fHorario1" placeholder="VIERNES 6:30 - 11:30 A.M.">
+          </div>
+          <div class="field">
+            <label class="field-label">Horario Trimestre 2</label>
+            <input class="field-input" type="text" id="fHorario2" placeholder="JUEVES 6:30 – 10:30 A.M.">
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- APRENDICES -->
+      <fieldset class="form-section">
+        <legend class="section-label">Aprendices</legend>
+        <p class="field-hint">Agrega los aprendices uno por uno. Puedes agregar más después desde el panel del grupo.</p>
+        <div id="aprendicesList"></div>
+        <button type="button" class="btn-secondary" id="btnAddAprendiz">+ Agregar aprendiz</button>
+      </fieldset>
+
+      <div class="form-actions">
+        <a href="index.html" class="btn-ghost">Cancelar</a>
+        <button type="submit" class="btn-primary">Crear grupo</button>
+      </div>
+
+    </form>
+  </div>
+
+</main>
+
+<script src="js/storage.js"></script>
+<script src="js/nuevo-grupo.js"></script>
+</body>
+</html>
