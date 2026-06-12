@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Grupo — Ecosistema de Formación</title>
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <div class="brand">
+      <a href="index.html" style="text-decoration:none;display:flex;align-items:center;gap:10px">
+        <span class="brand-icon">&#9632;</span>
+        <span class="brand-name">Ecosistema de Formación</span>
+      </a>
+    </div>
+    <nav class="top-nav">
+      <a href="index.html" class="nav-link">← Volver</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ENCABEZADO DEL GRUPO -->
+  <section class="group-header-section">
+    <div class="group-meta">
+      <div class="group-breadcrumb" id="groupBreadcrumb"></div>
+      <h1 class="group-name" id="groupName"></h1>
+      <div class="group-tags" id="groupTags"></div>
+    </div>
+    <div class="group-actions">
+      <button class="btn-secondary" id="btnEditGroup">Editar grupo</button>
+    </div>
+  </section>
+
+  <!-- ESTADÍSTICAS RÁPIDAS -->
+  <section class="stats-section">
+    <div class="stat-card">
+      <div class="stat-number" id="statTotal">0</div>
+      <div class="stat-label">Aprendices</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="statActivos">0</div>
+      <div class="stat-label">En formación</div>
+    </div>
+    <div class="stat-card stat-alert">
+      <div class="stat-number" id="statAlertas">0</div>
+      <div class="stat-label">Con alerta</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="statSesiones">0</div>
+      <div class="stat-label">Sesiones</div>
+    </div>
+  </section>
+
+  <!-- HERRAMIENTAS -->
+  <section class="tools-section">
+    <h2 class="section-heading">Herramientas del grupo</h2>
+    <div class="tools-grid">
+
+      <div class="tool-card tool-excel" id="toolExcel">
+        <div class="tool-icon">&#9783;</div>
+        <div class="tool-info">
+          <div class="tool-name">Generar Excel completo</div>
+          <div class="tool-desc">Plan de trabajo · Asistencia · Evidencias · Resumen · Ruta GFPI-F-176</div>
+        </div>
+        <button class="btn-tool" id="btnGenerarExcel">Generar .xlsx</button>
+      </div>
+
+      <div class="tool-card tool-asistencia">
+        <div class="tool-icon">&#9679;</div>
+        <div class="tool-info">
+          <div class="tool-name">Registrar asistencia</div>
+          <div class="tool-desc">Marca sesiones · Detecta 2+ faltas automáticamente</div>
+        </div>
+        <button class="btn-tool" onclick="openTool('asistencia')">Abrir</button>
+      </div>
+
+      <div class="tool-card tool-llamado">
+        <div class="tool-icon">&#9888;</div>
+        <div class="tool-info">
+          <div class="tool-name">Llamados de atención</div>
+          <div class="tool-desc">Generados automáticamente para aprendices con ≥2 faltas</div>
+        </div>
+        <button class="btn-tool" onclick="openTool('llamados')">Ver</button>
+      </div>
+
+      <div class="tool-card tool-plan">
+        <div class="tool-icon">&#9998;</div>
+        <div class="tool-info">
+          <div class="tool-name">Plan de trabajo concertado</div>
+          <div class="tool-desc">Cronograma de sesiones · Evidencias · Horarios</div>
+        </div>
+        <button class="btn-tool" onclick="openTool('plan')">Abrir</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LISTA DE APRENDICES CON ALERTAS -->
+  <section class="aprendices-section">
+    <div class="aprendices-header">
+      <h2 class="section-heading">Aprendices</h2>
+      <button class="btn-secondary" id="btnAddAprendiz">+ Agregar aprendiz</button>
+    </div>
+    <div class="aprendices-table-wrap">
+      <table class="aprendices-table" id="aprendicesTable">
+        <thead>
+          <tr>
+            <th>N°</th>
+            <th>Nombre</th>
+            <th>Documento</th>
+            <th>Estado</th>
+            <th>Faltas</th>
+            <th>Alerta</th>
+          </tr>
+        </thead>
+        <tbody id="aprendicesTbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- MODAL: Agregar aprendiz -->
+<div class="modal-overlay" id="modalAprendiz" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Agregar aprendiz</h3>
+      <button class="modal-close" onclick="closeModal('modalAprendiz')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Tipo doc.</label>
+          <select class="field-input" id="mTipoDoc">
+            <option value="TI">TI</option>
+            <option value="CC">CC</option>
+            <option value="CE">CE</option>
+            <option value="PA">PA</option>
+          </select>
+        </div>
+        <div class="field" style="flex:2">
+          <label class="field-label">Número de documento</label>
+          <input class="field-input" type="text" id="mDocumento">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Nombres</label>
+          <input class="field-input" type="text" id="mNombres">
+        </div>
+        <div class="field">
+          <label class="field-label">Apellidos</label>
+          <input class="field-input" type="text" id="mApellidos">
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Estado</label>
+        <select class="field-input" id="mEstado">
+          <option value="EN FORMACION">En formación</option>
+          <option value="CANCELADO">Cancelado</option>
+          <option value="RETIRO VOLUNTARIO">Retiro voluntario</option>
+          <option value="APLAZADO">Aplazado</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modalAprendiz')">Cancelar</button>
+      <button class="btn-primary" id="btnGuardarAprendiz">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="js/excel-generator.js"></script>
+<script src="js/grupo.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ecosistema de Formación</title>
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <div class="brand">
+      <span class="brand-icon">&#9632;</span>
+      <span class="brand-name">Ecosistema de Formación</span>
+    </div>
+    <nav class="top-nav">
+      <a href="index.html" class="nav-link active">Inicio</a>
+      <a href="nuevo-grupo.html" class="nav-link">+ Nuevo grupo</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- SELECTOR DE AÑO -->
+  <section class="year-section">
+    <div class="year-tabs" id="yearTabs"></div>
+    <button class="btn-add-year" id="btnAddYear">+ Año</button>
+  </section>
+
+  <!-- TRIMESTRES -->
+  <section class="trimester-section">
+    <div class="trimester-grid" id="trimesterGrid"></div>
+  </section>
+
+  <!-- GRUPOS DEL TRIMESTRE SELECCIONADO -->
+  <section class="groups-section" id="groupsSection" style="display:none">
+    <div class="groups-header">
+      <h2 class="groups-title" id="groupsTitle">Grupos</h2>
+      <a href="nuevo-grupo.html" class="btn-primary" id="btnNewGroup">+ Nuevo grupo</a>
+    </div>
+    <div class="groups-grid" id="groupsGrid"></div>
+    <div class="empty-state" id="emptyGroups" style="display:none">
+      <p>No hay grupos en este trimestre.</p>
+      <a href="nuevo-grupo.html" class="btn-primary">Crear primer grupo</a>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/storage.js"></script>
+<script src="js/index.js"></script>
+</body>
+</html>
