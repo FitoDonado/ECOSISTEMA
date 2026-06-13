@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan de Trabajo Concertado — Ecosistema de Formación</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+/* ── PLAN DE TRABAJO ────────────────── */
+.plan-header-card {
+  background: linear-gradient(135deg, #1a2240 0%, #1e2a50 100%);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+.plan-header-field { display: flex; flex-direction: column; gap: 3px; }
+.plan-header-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--accent); }
+.plan-header-value { font-size: 13px; color: var(--text); font-weight: 500; }
+.plan-header-full { grid-column: 1 / -1; }
+
+/* ── TABS ───────────────────────────── */
+.tabs { display:flex; gap:4px; margin-bottom:20px; }
+.tab-btn { background:var(--bg2); border:1px solid var(--border); color:var(--muted); padding:8px 18px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:500; font-family:inherit; transition:all .15s; }
+.tab-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+
+/* ── TABLA PLAN ─────────────────────── */
+.plan-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.plan-table-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.plan-table-wrap { overflow-x: auto; }
+.plan-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 900px;
+}
+.plan-table th {
+  background: var(--bg3);
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.plan-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.plan-table tr:last-child td { border-bottom: none; }
+.plan-table tr:hover td { background: rgba(255,255,255,.02); }
+
+/* ── CELDAS EDITABLES ───────────────── */
+.cell-edit {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 13px;
+  font-family: inherit;
+  width: 100%;
+  padding: 2px 4px;
+  border-radius: 4px;
+  resize: none;
+  outline: none;
+  min-height: 36px;
+}
+.cell-edit:focus { background: var(--bg3); border: 1px solid var(--accent); }
+.cell-select {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 5px 8px;
+  border-radius: 6px;
+  width: 100%;
+  outline: none;
+}
+.cell-select:focus { border-color: var(--accent); }
+.cell-date {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 5px 8px;
+  border-radius: 6px;
+  width: 130px;
+  outline: none;
+}
+.cell-date:focus { border-color: var(--accent); }
+
+/* ── ENTREGO badge ──────────────────── */
+.entrego-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .12s;
+  min-width: 60px;
+}
+.entrego-si  { background: rgba(34,201,122,.15); color: #4fd98a; border-color: #22c97a; }
+.entrego-no  { background: rgba(232,69,90,.12);  color: #f07080; border-color: #e8455a; }
+.entrego-vacio { background: var(--bg3); color: var(--muted); border-color: var(--border); }
+
+/* ── SESIÓN NÚMERO ──────────────────── */
+.sesion-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  background: var(--bg3);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ── AGREGAR SESIÓN ─────────────────── */
+.add-sesion-row td {
+  padding: 10px 12px;
+  background: var(--bg);
+}
+.btn-add-row {
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  padding: 6px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  transition: all .15s;
+}
+.btn-add-row:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── VISTA APRENDIZ ─────────────────── */
+.aprendiz-plan-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.aprendiz-plan-header {
+  padding: 12px 16px;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.aprendiz-plan-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.aprendiz-plan-doc  { font-size: 12px; color: var(--muted); }
+.aprendiz-mini-table { width:100%; border-collapse:collapse; font-size:12px; }
+.aprendiz-mini-table th { background:var(--bg); padding:8px 12px; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); border-bottom:1px solid var(--border); }
+.aprendiz-mini-table td { padding:8px 12px; border-bottom:1px solid var(--border); color:var(--text); }
+.aprendiz-mini-table tr:last-child td { border-bottom:none; }
+
+/* ── STATS RÁPIDAS ──────────────────── */
+.plan-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+.pstat { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; text-align:center; }
+.pstat-num { font-size:26px; font-weight:800; color:var(--text); }
+.pstat-label { font-size:11px; color:var(--muted); margin-top:2px; }
+.pstat.warn .pstat-num { color: var(--warning); }
+.pstat.ok   .pstat-num { color: var(--success); }
+
+@media(max-width:700px){
+  .plan-header-card { grid-template-columns:1fr; }
+  .plan-stats { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <div class="brand">
+      <a href="index.html" style="text-decoration:none;display:flex;align-items:center;gap:10px">
+        <span class="brand-icon">&#9632;</span>
+        <span class="brand-name">Ecosistema de Formación</span>
+      </a>
+    </div>
+    <nav class="top-nav">
+      <span class="nav-link" id="navGrupo" style="color:var(--muted)"></span>
+      <a href="#" class="nav-link" id="btnVolver">← Volver al grupo</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main" style="max-width:1300px">
+
+  <!-- ENCABEZADO -->
+  <div style="margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px" id="breadcrumb"></div>
+      <h1 style="font-size:22px;font-weight:800;color:var(--text)">Plan de Trabajo Concertado</h1>
+      <p style="font-size:12px;color:var(--muted);margin-top:3px">GFPI-G-013 · Ruta de aprendizaje acordada con el grupo</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-secondary" id="btnExportExcel">Exportar Excel</button>
+      <button class="btn-primary" id="btnGuardar">Guardar cambios</button>
+    </div>
+  </div>
+
+  <!-- DATOS DEL GRUPO -->
+  <div class="plan-header-card" id="planHeaderCard"></div>
+
+  <!-- STATS -->
+  <div class="plan-stats" id="planStats"></div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('sesiones')">Sesiones del trimestre</button>
+    <button class="tab-btn" onclick="switchTab('aprendices')">Por aprendiz</button>
+  </div>
+
+  <!-- TAB: SESIONES -->
+  <div id="tab-sesiones">
+    <div class="plan-wrap">
+      <div class="plan-table-header">
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)">Cronograma de actividades</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Registra las actividades, evidencias, forma de entrega y fecha para cada sesión</div>
+        </div>
+        <button class="btn-secondary" id="btnAddSesion">+ Agregar sesión</button>
+      </div>
+      <div class="plan-table-wrap">
+        <table class="plan-table" id="planTable">
+          <thead>
+            <tr>
+              <th style="width:50px">N°</th>
+              <th style="width:100px">Fecha</th>
+              <th>Actividad a desarrollar</th>
+              <th style="width:200px">Evidencia a entregar</th>
+              <th style="width:90px">Forma entrega</th>
+              <th style="width:120px">Fecha entrega</th>
+              <th style="width:80px">Entregó</th>
+              <th style="width:50px"></th>
+            </tr>
+          </thead>
+          <tbody id="planTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: POR APRENDIZ -->
+  <div id="tab-aprendices" style="display:none">
+    <div style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:14px;font-weight:600;color:var(--text)">Plan individual por aprendiz</div>
+      <div style="font-size:12px;color:var(--muted)" id="aprendizCount"></div>
+    </div>
+    <div id="aprendicesCards"></div>
+  </div>
+
+</main>
+
+<script src="js/storage.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="js/plan-trabajo.js"></script>
+</body>
+</html>

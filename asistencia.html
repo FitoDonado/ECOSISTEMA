@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asistencia — Ecosistema de Formación</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+/* ── SESIÓN ACTIVA ─────────────────────── */
+.sesion-banner {
+  background: linear-gradient(135deg, #1a2240 0%, #1e2a50 100%);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.sesion-info { flex: 1; }
+.sesion-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--accent); margin-bottom: 4px; }
+.sesion-titulo { font-size: 18px; font-weight: 700; color: var(--text); }
+.sesion-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.sesion-actions { display: flex; gap: 8px; }
+
+/* ── PANEL NUEVA SESIÓN ────────────────── */
+.nueva-sesion-panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.nueva-sesion-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.dias-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 6px;
+}
+.dia-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 8px 4px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  transition: all .15s;
+  font-family: inherit;
+}
+.dia-btn:hover { border-color: var(--accent); color: var(--text); }
+.dia-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ── TABLA ASISTENCIA ──────────────────── */
+.asistencia-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.asistencia-table-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.asistencia-table-wrap { overflow-x: auto; }
+.asistencia-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 700px;
+}
+.asistencia-table th {
+  background: var(--bg3);
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.asistencia-table th.left { text-align: left; }
+.asistencia-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  vertical-align: middle;
+}
+.asistencia-table td.left { text-align: left; }
+.asistencia-table tr:last-child td { border-bottom: none; }
+.asistencia-table tr:hover td { background: rgba(255,255,255,.02); }
+
+/* ── MARCAS DE ASISTENCIA ──────────────── */
+.marca-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all .12s;
+  background: var(--bg3);
+  color: var(--muted);
+  font-family: inherit;
+}
+.marca-btn:hover { transform: scale(1.1); }
+.marca-btn.O { background: rgba(34,201,122,.2); color: #4fd98a; border-color: #22c97a; }
+.marca-btn.X { background: rgba(232,69,90,.2);  color: #f07080; border-color: #e8455a; }
+.marca-btn.E { background: rgba(79,110,247,.2); color: #7b9fff; border-color: #4f6ef7; }
+.marca-btn.T { background: rgba(245,166,35,.2); color: #f5b84a; border-color: #f5a623; }
+
+/* Celda de marca — cicla entre estados al hacer clic */
+.celda-marca {
+  width: 44px;
+}
+
+/* ── RESUMEN LATERAL ───────────────────── */
+.resumen-fila {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+.chip {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.chip-o   { background: rgba(34,201,122,.15); color: #4fd98a; }
+.chip-x   { background: rgba(232,69,90,.15);  color: #f07080; }
+.chip-e   { background: rgba(79,110,247,.15); color: #7b9fff; }
+.chip-t   { background: rgba(245,166,35,.15); color: #f5b84a; }
+.chip-pct { background: var(--bg3); color: var(--muted); }
+
+/* ── ALERTA AUTOMÁTICA ─────────────────── */
+.alerta-fila {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.alerta-ok      { background: transparent; color: var(--muted); }
+.alerta-llamado { background: rgba(245,166,35,.15); color: #f5b84a; }
+.alerta-deser   { background: rgba(232,69,90,.15);  color: #f07080; }
+
+/* ── HISTORIAL DE SESIONES ─────────────── */
+.sesiones-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sesion-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.sesion-item:hover { border-color: var(--accent); }
+.sesion-item.activa { border-color: var(--accent); background: rgba(79,110,247,.08); }
+.sesion-item-info { flex: 1; }
+.sesion-item-num { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+.sesion-item-fecha { font-size: 14px; font-weight: 600; color: var(--text); }
+.sesion-item-hora { font-size: 12px; color: var(--muted); }
+.sesion-item-stats { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ── MODAL SESIÓN ──────────────────────── */
+.modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px; }
+.modal { background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:520px; }
+.modal-header { padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border); }
+.modal-header h3 { font-size:16px;font-weight:600; }
+.modal-close { background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:0; }
+.modal-body { padding:20px 24px;display:flex;flex-direction:column;gap:14px; }
+.modal-footer { padding:16px 24px 20px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid var(--border); }
+
+/* ── TABS ──────────────────────────────── */
+.tabs { display:flex;gap:4px;margin-bottom:20px; }
+.tab-btn { background:var(--bg2);border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;transition:all .15s; }
+.tab-btn:hover { color:var(--text); }
+.tab-btn.active { background:var(--accent);border-color:var(--accent);color:#fff; }
+.tab-content { display:none; }
+.tab-content.show { display:block; }
+
+/* ── HORAS SELECT ──────────────────────── */
+.hora-row { display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px; }
+
+@media(max-width:700px) {
+  .nueva-sesion-grid { grid-template-columns:1fr 1fr; }
+  .dias-grid { grid-template-columns:repeat(4,1fr); }
+  .hora-row { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <div class="brand">
+      <a href="index.html" style="text-decoration:none;display:flex;align-items:center;gap:10px">
+        <span class="brand-icon">&#9632;</span>
+        <span class="brand-name">Ecosistema de Formación</span>
+      </a>
+    </div>
+    <nav class="top-nav">
+      <span class="nav-link" id="navGrupo" style="color:var(--muted)"></span>
+      <a href="#" class="nav-link" id="btnVolver">← Volver al grupo</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main" style="max-width:1200px">
+
+  <!-- ENCABEZADO -->
+  <div style="margin-bottom:24px">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:4px" id="breadcrumb"></div>
+    <h1 style="font-size:22px;font-weight:800;color:var(--text)" id="pageTitle">Asistencia</h1>
+    <p style="font-size:13px;color:var(--muted);margin-top:4px" id="pageSubtitle"></p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('registrar')">Registrar sesión</button>
+    <button class="tab-btn" onclick="switchTab('historial')">Historial de sesiones</button>
+    <button class="tab-btn" onclick="switchTab('resumen')">Resumen general</button>
+  </div>
+
+  <!-- TAB: REGISTRAR SESIÓN -->
+  <div class="tab-content show" id="tab-registrar">
+
+    <!-- Sesión activa -->
+    <div id="sesionActivaBanner" style="display:none">
+      <div class="sesion-banner">
+        <div class="sesion-info">
+          <div class="sesion-label">Sesión activa</div>
+          <div class="sesion-titulo" id="bannerTitulo"></div>
+          <div class="sesion-meta" id="bannerMeta"></div>
+        </div>
+        <div class="sesion-actions">
+          <button class="btn-secondary" onclick="cerrarSesion()">Cerrar sesión</button>
+          <button class="btn-primary" onclick="exportarSesion()">Exportar Excel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nueva sesión -->
+    <div id="panelNuevaSesion">
+      <div class="nueva-sesion-panel">
+        <h3 style="font-size:15px;font-weight:600;margin-bottom:16px">Abrir nueva sesión</h3>
+
+        <div class="field" style="margin-bottom:14px">
+          <label class="field-label">Día de la semana</label>
+          <div class="dias-grid" id="diasGrid"></div>
+          <input type="hidden" id="sDia">
+        </div>
+
+        <div class="hora-row">
+          <div class="field">
+            <label class="field-label">Fecha</label>
+            <input class="field-input" type="date" id="sFecha">
+          </div>
+          <div class="field">
+            <label class="field-label">Hora inicio</label>
+            <select class="field-input" id="sHoraInicio"></select>
+          </div>
+          <div class="field">
+            <label class="field-label">Hora fin</label>
+            <select class="field-input" id="sHoraFin"></select>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:14px">
+          <label class="field-label">Tema de la sesión (opcional)</label>
+          <input class="field-input" type="text" id="sTema" placeholder="Ej: Introducción a normas técnicas...">
+        </div>
+
+        <div style="margin-top:16px;display:flex;gap:10px">
+          <button class="btn-primary" onclick="abrirSesion()">Abrir sesión y marcar asistencia</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de asistencia de la sesión activa -->
+    <div id="tablaAsistenciaWrap" style="display:none">
+      <div class="asistencia-wrap">
+        <div class="asistencia-table-header">
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--text)" id="tablaSessionTitle"></div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">Toca la celda para ciclar: vacío → <b style="color:#4fd98a">O</b> → <b style="color:#f07080">X</b> → <b style="color:#7b9fff">E</b> → <b style="color:#f5b84a">T</b> → vacío</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-secondary" onclick="marcarTodos('O')">Todos O</button>
+            <button class="btn-secondary" onclick="marcarTodos('X')">Todos X</button>
+          </div>
+        </div>
+        <div class="asistencia-table-wrap">
+          <table class="asistencia-table">
+            <thead>
+              <tr>
+                <th class="left" style="width:36px">N°</th>
+                <th class="left">Apellidos y nombres</th>
+                <th style="width:100px">Documento</th>
+                <th style="width:60px">Asist.</th>
+                <th style="width:120px">Alerta</th>
+                <th style="width:80px">Faltas tot.</th>
+              </tr>
+            </thead>
+            <tbody id="tablaAsistenciaTbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn-ghost" onclick="cerrarSesion()">Cerrar sesión</button>
+        <button class="btn-primary" onclick="guardarYCerrar()">Guardar y cerrar sesión</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB: HISTORIAL -->
+  <div class="tab-content" id="tab-historial">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-size:16px;font-weight:600">Sesiones registradas</h2>
+      <span style="font-size:12px;color:var(--muted)" id="totalSesiones"></span>
+    </div>
+    <div class="sesiones-list" id="sesionesList"></div>
+    <div id="emptyHistorial" style="display:none;text-align:center;padding:40px;color:var(--muted)">
+      Aún no hay sesiones registradas para este grupo.
+    </div>
+  </div>
+
+  <!-- TAB: RESUMEN GENERAL -->
+  <div class="tab-content" id="tab-resumen">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+      <h2 style="font-size:16px;font-weight:600">Resumen de asistencia</h2>
+      <div style="display:flex;gap:8px">
+        <button class="btn-secondary" onclick="exportarResumenExcel()">Exportar Excel</button>
+      </div>
+    </div>
+    <div class="asistencia-wrap">
+      <div class="asistencia-table-wrap">
+        <table class="asistencia-table" id="tablaResumen">
+          <thead id="tablaResumenHead"></thead>
+          <tbody id="tablaResumenBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL: Ver/editar sesión histórica -->
+<div class="modal-overlay" id="modalSesion" style="display:none">
+  <div class="modal" style="max-width:720px;width:100%">
+    <div class="modal-header">
+      <h3 id="modalSesionTitulo">Sesión</h3>
+      <button class="modal-close" onclick="closeModal('modalSesion')">✕</button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <div class="asistencia-table-wrap">
+        <table class="asistencia-table" id="modalTabla">
+          <thead>
+            <tr>
+              <th class="left">N°</th>
+              <th class="left">Apellidos y nombres</th>
+              <th>Asistencia</th>
+              <th>Faltas acum.</th>
+            </tr>
+          </thead>
+          <tbody id="modalTbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('modalSesion')">Cerrar</button>
+      <button class="btn-primary" id="btnGuardarModal" onclick="guardarEdicionModal()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="js/asistencia.js"></script>
+</body>
+</html>
